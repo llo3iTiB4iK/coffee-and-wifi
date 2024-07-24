@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Restaurants{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div>
+
+        <div class="float-end">
+          <button type="button" class="btn btn-warning mx-3" onclick="confirmDelete('{{ url_for('add_cafe') }}')">Add a Cafe</button>
+          <a class="btn btn-warning" href="{{ url_for('home') }}">Home</a>
+        </div>
+
+        <h1 class="my-5">
+          {{ header_text }}
+        </h1>
+
+        <form class="d-flex mb-4" action="{{ url_for('find_a_cafe') }}">
+          <input class="form-control me-2" type="search" placeholder="Enter location to find cafes nearby" name="loc">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+
+      </div>
+
+      <div class="row">
+        {% for cafe in cafes %}
+          <div class="col-lg-6 col-xl-4 mb-3">
+            <div class="card text-white bg-dark h-100">
+              <img src="{{ cafe.img_url }}" class="card-img-top" height="100%">
+
+              <div class="card-body">
+                <h5 class="card-title">{{ cafe.name }}</h5>
+                <p class="card-text">{{ cafe.location }}</p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action list-group-item-dark">🪑 {{ cafe.seats }}</li>
+                <li class="list-group-item list-group-item-action list-group-item-dark">☕ {{ cafe.coffee_price }}</li>
+                <li class="list-group-item list-group-item-action list-group-item-dark">🔌 {{ "Yes" if cafe.has_sockets else "No"}}</li>
+                <li class="list-group-item list-group-item-action list-group-item-dark">🚽 {{ "Yes" if cafe.has_toilet else "No" }}</li>
+                <li class="list-group-item list-group-item-action list-group-item-dark">🌐 {{ "Yes" if cafe.has_wifi else "No" }}</li>
+                <li class="list-group-item list-group-item-action list-group-item-dark">📞 {{ "Yes" if cafe.can_take_calls else "No" }}</li>
+              </ul>
+              <div class="card-body">
+                <a href="{{ cafe.map_url }}" class="card-link" target="_blank">Show on Google Maps</a>
+                <a href="#" class="card-link" onclick="confirmDelete('{{ url_for('delete_cafe', cafe_id=cafe.id) }}')">Delete Cafe</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(deleteUrl) {
+    const apiKey = prompt("Please enter your API key:");
+    if (apiKey) {
+      window.location.href = deleteUrl + "?api-key=" + apiKey;
+    }
+  }
+</script>
+
+{% endblock %}
